@@ -1,5 +1,5 @@
 
-const randomNumber = Math.round(Math.random() * 100);
+const randomNumber = Math.round(Math.random() * 100 + 1);
 let goodAnswer = true;
 while(goodAnswer){
 	var choice = prompt("Choisissez un nombre entre 1 et 100");

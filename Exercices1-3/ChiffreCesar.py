@@ -27,3 +27,17 @@ def chiffreCesar(message, key):
     return ''.join(cryptedMessageArray)
 
 print(chiffreCesar('1234567890',1))
+
+
+generation = 5
+fibo = []
+i = 0
+while len(fibo) < generation:
+    if len(fibo) < 2:
+        fibo[i] = 1
+        i = i + 1
+    else:
+        fibo[i] = fibo[i-1] + fibo[i-2]
+        i = i + 1
+
+print(fibo)
