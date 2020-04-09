@@ -1,5 +1,0 @@
-# Start the server with the cmd : "node server.js"
-# Then open "localhost:3000" 
-# You are free to ask the input for converting the value by pressing one button : hexa to decimal or decimal to hexa
-# It can take some time to get the answer from the Number API.
-# Have fun !
