@@ -50,5 +50,3 @@ monArbre.ajouterValeur(21);
 
 monArbre.afficherArbre();
  
-//monArbre.search(monArbre['racine'], 8);
-//console.log(monArbre.search(5, monArbre['racine']));

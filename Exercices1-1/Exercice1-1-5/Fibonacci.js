@@ -15,9 +15,9 @@ program
   .parse(process.argv)
 
 
-function fibonacci(){
+function fibonacci(generation){
 	var fibArray = []; 
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < generation; i++) {
 	  if(i <= 1){
 	    fibArray[i] = 1;
 	    console.log(fibArray[i]);
@@ -27,3 +27,11 @@ function fibonacci(){
 	  }
 	}
 }
+
+var fibArray = []; 
+function fibonacci(number){
+	if(number <= 1) return 1
+	else return fibArray.push(fibonacci(i - 1) + fibonacci(i - 2))
+}
+
+console.log(fibArray);
