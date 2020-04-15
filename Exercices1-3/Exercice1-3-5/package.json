@@ -1,0 +1,17 @@
+{
+  "name": "exercice1-3-5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "AdresseTypeBitcoin.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "base58": "^2.0.1",
+    "bs58": "^4.0.1",
+    "crypto-js": "^4.0.0",
+    "ripemd160": "^2.0.2"
+  }
+}
