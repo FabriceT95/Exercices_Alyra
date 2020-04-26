@@ -1,0 +1,120 @@
+<!-- views/pages/index.ejs -->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include ('../partials/head.ejs') %>
+
+</head>
+<body>
+
+<%- include ('../partials/header.ejs') %>
+
+
+<div class="row justify-content-center row-no-margin">
+    <fieldset class="col-8 col-md-6 px-3">
+        <legend>Convertisseur</legend>
+
+
+        <div class="container" style="color:white">
+
+            <!-- Hexa en Décimal -->
+            <div class="row">
+                <div class="col-sm">
+                    <label class="pt-2" for="price">Hexadécimal &rarr; Décimal</label>
+                    <div class="input-group mb-3">
+                        <input id="hexaToDecimalInput" type="text" class="form-control">
+                        <button type="button" id="hexaToDecimalButton" class="btn btn-primary btn-sm">Convertir</button>
+                    </div>
+                </div>
+                <div class="col-sm" style="margin:auto">
+                    <div style="text-align:center; color:white" id="hexaToDecimalResult"></div>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Décimal en Hexa -->
+            <div class="row">
+                <div class="col-sm">
+                    <label class="pt-2" for="price">Décimal &rarr; Hexadécimal</label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="deciToHexadecimalInput" class="form-control">
+                        <button type="button" id="deciToHexadecimalButton" class="btn btn-primary btn-sm">Convertir
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm" style="margin:auto">
+                    <div style="text-align:center;color:white" id="deciToHexadecimalResult"></div>
+                </div>
+            </div>
+
+            <hr>
+            <!-- Hexa little endian en Hexa -->
+            <div class="row">
+                <div class="col-sm">
+                    <label class="pt-2" for="price">Hexadécimal Little Endien &rarr; Hexadécimal</label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="hexaLEToHexaInput" class="form-control">
+                        <button type="button" id="hexaLEToHexaButton" class="btn btn-primary btn-sm">Convertir</button>
+                    </div>
+                </div>
+                <div class="col-sm" style="margin:auto">
+                    <div style="text-align:center;color:white" id="hexaLEToHexaResult"></div>
+                </div>
+            </div>
+            <hr>
+
+            <!-- varInt en decimal -->
+            <!-- <div class="row">
+             <div class="col-sm">
+                 <label class="pt-2" for="price">varInt &rarr; Décimal</label>
+                 <div class="input-group mb-3">
+                     <input type="text" class="form-control">
+                     <button type="button" class="btn btn-primary btn-sm">Convertir</button>
+                 </div>
+             </div>
+             <div class="col-sm" style="margin:auto">
+               <div style="text-align:center;color:white">Result</div>
+             </div>
+           </div>
+            <hr>-->
+
+            <!-- Champ Bits en Cible correspondante -->
+            <div class="row">
+                <div class="col-sm">
+                    <label class="pt-2" for="price">Champ Bits &rarr; Cible</label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="calculerCibleInput" class="form-control">
+                        <button type="button" id="calculerCibleButton" class="btn btn-primary btn-sm">Convertir</button>
+                    </div>
+                </div>
+                <div class="col-sm" style="margin:auto">
+                    <div style="text-align:center;color:white" id="calculerCibleResult"></div>
+                </div>
+            </div>
+            <hr>
+
+            <!-- Cible en Difficulté -->
+            <div class="row">
+                <div class="col-sm">
+                    <label class="pt-2" for="price">Cible &rarr; Difficulté</label>
+                    <div class="input-group mb-3">
+                        <input type="text" id="calculerDifficulteInput" class="form-control">
+                        <button type="button" id="calculerDifficulteButton" class="btn btn-primary btn-sm">Convertir
+                        </button>
+                    </div>
+                </div>
+                <div class="col-sm" style="margin:auto">
+                    <div style="text-align:center;color:white" id="calculerDifficulteResult"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </fieldset>
+</div>
+
+
+<%- include ('../partials/footer.ejs') %>
+</body>
+</html>

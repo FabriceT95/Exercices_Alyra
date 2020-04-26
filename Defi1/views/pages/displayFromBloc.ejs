@@ -1,0 +1,180 @@
+<!-- views/pages/displayFromBloc.ejs -->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include ('../partials/head') %>
+</head>
+<body>
+
+<%- include ('../partials/header') %>
+
+<div class="row justify-content-center row-no-margin">
+    <fieldset class="col-8 col-md-6 px-3">
+        <legend> Décomposeur de bloc</legend>
+        <div style="text-align:center; color:white" class="font-italic"> Insérez le hash d'un bloc existant <br/><span>Par exemple : 0000000000000bae09a7a393a8acded75aa67e46cb81f7acaa5ad94f9eacd103</span>
+        </div>
+        <hr>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="getRawblockFromHashInput"><br><br>
+            <button type="button" id="getRawblockFromHashButton" class="btn btn-danger btn-sm">Exporter les champs
+            </button>
+        </div>
+    </fieldset>
+</div>
+
+<div class="row justify-content-center row-no-margin" style="margin:10px">
+    <div class="card col-8 col-md-6 px-3">
+        <div id="getRawblockFromHashResult" class="card-body">
+
+            <div class="container">
+
+                <!-- Bits -->
+                <div class="row">
+                    <div class="col-sm">
+                        Champ Bits
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="champBits"></div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Cible -->
+                <div class="row">
+                    <div class="col-sm">
+                        Cible
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="cible"></div>
+                    </div>
+                </div>
+
+                <hr>
+                <!-- Difficulté -->
+                <div class="row">
+                    <div class="col-sm">
+                        Difficulté
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="difficulte"></div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Charge -->
+                <div class="row">
+                    <div class="col-sm">
+                        Charge
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="charge"></div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Hash du bloc -->
+                <div class="row">
+                    <div class="col-sm">
+                        Hash du bloc
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="hashbloc"></div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Nombre de transactions -->
+                <div class="row">
+                    <div class="col-sm">
+                        Nombre de transactions
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="n_tx"></div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- Nonce -->
+                <div class="row">
+                    <div class="col-sm">
+                        Nonce
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="nonce"></div>
+                    </div>
+                </div>
+
+                <hr>
+                <!-- Bloc précédent -->
+                <div class="row">
+                    <div class="col-sm">
+                        Bloc précédent
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="prev_block"></div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Taille -->
+                <div class="row">
+                    <div class="col-sm">
+                        Taille
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="size"></div>
+                    </div>
+                </div>
+
+                <hr>
+                <!-- Date -->
+                <div class="row">
+                    <div class="col-sm">
+                        Date
+                    </div>
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center" id="date"></div>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <div class="col-sm" style="margin:auto">
+                        <div style="text-align:center"><strong> Ensemble des transactions</strong></div>
+                    </div>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col"> #</th>
+                        <th scope="col"> Hash de la transaction</th>
+                        <th scope="col"> Taille</th>
+                        <th scope="col"> Date</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableContent" style="font-size:14px;">
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center row-no-margin" style="margin:10px">
+    <div id="modalFadeError" class="alert alert-warning alert-dismissible hidden fade" role="alert">
+        <strong></strong>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+</div>
+
+
+<%- include ('../partials/footer') %>
+</body>
+</html>
