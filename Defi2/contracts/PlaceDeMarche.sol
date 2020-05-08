@@ -1,10 +1,11 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
-import "github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
+//import "./SafeMath.sol";
 
 contract PlaceDeMarche{
 
-    using SafeMath for uint;
+   // using SafeMath for uint;
 
     // Récupération de la réputation d'un illustrateur depuis son adresse
     mapping (address => uint) public userToReputation;
@@ -39,7 +40,7 @@ contract PlaceDeMarche{
         uint remuneration;
         uint depot;
         uint delay;
-        uint description;
+        string description;
         Status status;
         uint minReputation;
         address[] candidates;
@@ -54,6 +55,35 @@ contract PlaceDeMarche{
     constructor() public{
         owner = msg.sender;
         admins.push(owner);
+    }
+
+    /*  function getUserToReputation(address _user) public returns (uint) {
+          return userToReputation[_user];
+      }
+
+      function getUserToName(address _user) public returns (string memory){
+          return userToName[_user];
+      }
+
+      function getUserSubscribe(address _user) public returns (bool){
+          return users[_user];
+      }
+
+      function getUserFromBlacklist(address _user) public returns (bool){
+          return blackList[_user];
+      }*/
+
+
+    function getAdminLength() public view returns (uint){
+        return admins.length;
+    }
+
+    function getCompaniesLength() public view returns (uint) {
+        return companies.length;
+    }
+
+    function getDemande(uint _id) public view returns (Demande memory) {
+        return demandes[_id];
     }
 
     // Ajout d'un admin par un admin
@@ -74,10 +104,10 @@ contract PlaceDeMarche{
     }
 
     // Ajout d'une demande en vérifiant que l'entreprise est inscrite
-    function ajouterDemande(/*address payable _address, /*uint _remuneration,*/ uint _delay, uint _description, uint _minReputation)  companyInscrit payable public {
+    function ajouterDemande(/*address payable _address, /*uint _remuneration,*/ uint _delay, string memory _description, uint _minReputation)  companyInscrit payable public {
         Demande memory demande;
         demande.addressCompany = msg.sender;
-        // demande.remuneration = msg.value / (102*10**-2);
+        // demande.remuneration =  msg.value / (102*10**-2);
         demande.depot = msg.value;
         demande.delay = now + _delay;
         demande.description = _description;
@@ -103,7 +133,7 @@ contract PlaceDeMarche{
     function livraison(uint _idDemande, address _travail) public checkIllustrateurChoisi(_idDemande) {
         demandes[_idDemande].travail = _travail;
         demandes[_idDemande].status = Status.FERMEE;
-        userToReputation[msg.sender].add(1);
+        userToReputation[msg.sender]+=1;
         // Transfert de l'argent : illustrateur récupère la rémunération associée, et le wallet récupère les frais de 2%
         msg.sender.transfer(demandes[_idDemande].remuneration);
         wallet.transfer(demandes[_idDemande].depot - demandes[_idDemande].remuneration);
@@ -112,7 +142,7 @@ contract PlaceDeMarche{
 
     // Retard de la demande en vérifiant que le délais est supérieur à la date du jour
     function retard(uint _idDemande) public checkDelay(_idDemande){
-        userToReputation[demandes[_idDemande].illustrateurChoisi].sub(1);
+        userToReputation[demandes[_idDemande].illustrateurChoisi]-=1;
     }
 
     // Ban d'un illustrateur en vérifiant si c'est l'admin qui fait la requête + si l'illustrateur existe
@@ -170,7 +200,7 @@ contract PlaceDeMarche{
     // Check si illustrateur est parmi les candidats de la demande (pour la fonction postuler())
     function aDejaPostule(uint _idDemande, address _illustrateur) public view returns (bool) {
         for (uint i=0; i<demandes[_idDemande].candidates.length; i++) {
-            if(msg.sender == demandes[_idDemande].candidates[i]){
+            if(_illustrateur == demandes[_idDemande].candidates[i]){
                 return true;
             }
         }

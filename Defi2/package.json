@@ -1,0 +1,17 @@
+{
+  "name": "Defi2",
+  "version": "1.0.0",
+  "engines": {
+    "node": "12.13.0",
+    "npm": "6.12.x"
+  },
+  "devDependencies": {
+    "solidity-coverage": "^0.6.7"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^2.4.0",
+    "@openzeppelin/test-helpers": "^0.5.3",
+    "@truffle/hdwallet-provider": "^1.0.34",
+    "bootstrap": "^4.4.1"
+  }
+}
