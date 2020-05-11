@@ -36,6 +36,8 @@ contract PlaceDeMarche{
 
     // Structure de demande à créer lors de l'ajout d'une demande
     struct Demande{
+        uint id;
+        string nomOffre;
         address addressCompany;
         uint remuneration;
         uint depot;
@@ -45,34 +47,19 @@ contract PlaceDeMarche{
         uint minReputation;
         address[] candidates;
         address illustrateurChoisi;
-        address travail;
+        bytes32 travail;
     }
 
     // Liste des demandes
     Demande[] public demandes;
+
+    event inscription_illustrateur(string _name);
 
     // Initialisation du contrat avec l'ajout de l'owner dans la liste des admins
     constructor() public{
         owner = msg.sender;
         admins.push(owner);
     }
-
-    /*  function getUserToReputation(address _user) public returns (uint) {
-          return userToReputation[_user];
-      }
-
-      function getUserToName(address _user) public returns (string memory){
-          return userToName[_user];
-      }
-
-      function getUserSubscribe(address _user) public returns (bool){
-          return users[_user];
-      }
-
-      function getUserFromBlacklist(address _user) public returns (bool){
-          return blackList[_user];
-      }*/
-
 
     function getAdminLength() public view returns (uint){
         return admins.length;
@@ -82,8 +69,14 @@ contract PlaceDeMarche{
         return companies.length;
     }
 
+    // Retourne une demande en particulier
     function getDemande(uint _id) public view returns (Demande memory) {
         return demandes[_id];
+    }
+
+    // Retourne toutes les demandes
+    function getAllDemandes() public view returns (Demande[] memory){
+        return demandes;
     }
 
     // Ajout d'un admin par un admin
@@ -96,6 +89,7 @@ contract PlaceDeMarche{
         userToReputation[msg.sender] = 1;
         userToName[msg.sender] = _name;
         users[msg.sender] = true;
+        emit inscription_illustrateur(_name);
     }
 
     // inscription de l'entreprise en vérifiant que l'entreprise ne l'est pas déjà
@@ -104,17 +98,20 @@ contract PlaceDeMarche{
     }
 
     // Ajout d'une demande en vérifiant que l'entreprise est inscrite
-    function ajouterDemande(/*address payable _address, /*uint _remuneration,*/ uint _delay, string memory _description, uint _minReputation)  companyInscrit payable public {
+    function ajouterDemande(/*address payable _address,*/ uint _remuneration, uint _delay, string memory _description, uint _minReputation, string memory _nomOffre)  companyInscrit payable public {
         Demande memory demande;
+        demande.nomOffre = _nomOffre;
         demande.addressCompany = msg.sender;
-        // demande.remuneration =  msg.value / (102*10**-2);
+        demande.remuneration = _remuneration;//msg.value / (10210**-2);
         demande.depot = msg.value;
         demande.delay = now + _delay;
         demande.description = _description;
         demande.status = Status.OUVERTE;
         demande.minReputation = _minReputation;
+        demande.id = demandes.length-1;
         demandes.push(demande);
-    }
+
+}
 
     // Illustrateur qui postule en insérant l'id de la demande, en vérifiant si il n'a pas postulé + si le status de la demande est OUVERTE + si réputation correspond
     function postuler(uint _idDemande) pasEncorePostule(_idDemande) checkIfOpen(_idDemande) checkReputation(_idDemande) public {
@@ -130,13 +127,17 @@ contract PlaceDeMarche{
     }
 
     // Illustrateur donne l'id de la demande ainsi que l'adresse de son travail en vérifiant si l'illustrateur choisi est bien celui de la demande en question
-    function livraison(uint _idDemande, address _travail) public checkIllustrateurChoisi(_idDemande) {
-        demandes[_idDemande].travail = _travail;
+    function livraison(uint _idDemande, string memory _travail) public payable checkIllustrateurChoisi(_idDemande) {
+        address payable illustrateurWallet = msg.sender;
+        demandes[_idDemande].travail = keccak256(bytes(_travail));
         demandes[_idDemande].status = Status.FERMEE;
         userToReputation[msg.sender]+=1;
-        // Transfert de l'argent : illustrateur récupère la rémunération associée, et le wallet récupère les frais de 2%
-        msg.sender.transfer(demandes[_idDemande].remuneration);
-        wallet.transfer(demandes[_idDemande].depot - demandes[_idDemande].remuneration);
+         //Transfert de l'argent : illustrateur récupère la rémunération associée, et le wallet récupère les frais de 2%
+       // address(this).balance += demandes[_idDemande].remuneration;
+      //  this.balance += (demandes[_idDemande].depot - demandes[_idDemande].remuneration);
+     //  address(demandes[_idDemande].addressCompany).balance =- demandes[_idDemande].depot;
+     //  illustrateurWallet.transfer(demandes[_idDemande].remuneration);
+        //wallet.transfer();
 
     }
 

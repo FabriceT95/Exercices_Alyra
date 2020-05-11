@@ -1,0 +1,7 @@
+- Ajouter une offre
+- Postuler à une offre (Ajouter un bouton dans la liste des offres pour pouvoir postuler)
+- Accepter une offre (Onglet "Mes offres" (retourne toutes les demandes liées à l'adresse de l'entreprise) et si il y a des candidats, les affiche tous et pour chacun d'eux il y a un bouton pour accepter)
+- Livraison travail
+( - Owner peut bannir
+  - Retard (Onglet "Mes offres", un bouton à coté des offres "ENCOURS" pour faire le signalement d'un retard) (Optimiser le retard = 1 retard par jour, pas de spam)
+  )

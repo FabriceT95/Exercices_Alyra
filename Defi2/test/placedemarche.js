@@ -10,13 +10,14 @@ contract ('PlaceDeMarche', function (accounts) {
     const newUser = accounts[3];
     // const status =  {ouverte:OUVERTE, encours:ENCOURS, fermee:FERMEE};
     const minReputation = 1;
-    const travail = accounts[4];
+    const travail = "http://localhost:5000";
     const status = {
         Ouverte : 0,
         EnCours : 1,
         Termine : 2
     };
-    const demande = {entreprise:company, /*remuneration:100,*/depot:102, delay:10,description:"LA JOCONDE", status:status.Ouverte, minReputation:minReputation,candidates:[],illustrateurChoisi:"", travail:"" };
+    const amount = ether("1");
+    const demande = {entreprise:company, nomOffre:"Joconde",remuneration:100,depot:102, delay:10,description:"LA JOCONDE", status:status.Ouverte, minReputation:minReputation,candidates:[],illustrateurChoisi:"", travail:"" };
     beforeEach(async function () {
         this.PDMInstance = await placeDeMarche.new({from : owner});
     });
@@ -58,27 +59,26 @@ contract ('PlaceDeMarche', function (accounts) {
     it('ajoute une demande', async function () {
         // On ajoute l'entreprise au tableau car on a besoin d'avoir cette entreprise dans le tableau pour pourvoir poursuivre le test
         await this.PDMInstance.inscriptionCompany({from:company});
-        let amount = ether("1");
-        await this.PDMInstance.ajouterDemande(demande.delay, demande.description, demande.minReputation, {from:company, value:amount});
+        await this.PDMInstance.ajouterDemande(demande.remuneration,demande.delay, demande.description, demande.minReputation, demande.nomOffre, {from:company, value:amount});
 
         let getDemande = await this.PDMInstance.getDemande(0);
 
         expect(getDemande.addressCompany).to.equal(company);
         //expect(Number(getDemande.remuneration)).to.equal(Number(demande.remuneration));
         expect(getDemande.depot).to.be.bignumber.equal(amount);
-        expect(Math.trunc(Number(getDemande.delay)/100)).to.equal(Math.trunc((demande.delay+ Date.now())/100000));
+        //expect(Math.trunc(Number(getDemande.delay)/100)).to.equal(Math.trunc((demande.delay + Date.now())/100000));
         expect(getDemande.description).to.equal(demande.description);
         expect(Number(getDemande.status)).to.equal(0);
         expect(Number(getDemande.minReputation)).to.equal(demande.minReputation);
+        //expect(Number(getDemande.id)).to.equal(0);
 
     });
 
     it('postule', async function () {
-
         await this.PDMInstance.inscription(name, {from:newUser});
         // On ajoute l'entreprise au tableau car on a besoin d'avoir cette entreprise dans le tableau pour pourvoir poursuivre le test
         await this.PDMInstance.inscriptionCompany({from:company});
-        await this.PDMInstance.ajouterDemande(demande.delay, demande.description, demande.minReputation, {from:company});
+        await this.PDMInstance.ajouterDemande(demande.remuneration,demande.delay, demande.description, demande.minReputation, demande.nomOffre, {from:company, value:amount});
 
         await this.PDMInstance.postuler(0, {from:newUser});
 
@@ -89,10 +89,10 @@ contract ('PlaceDeMarche', function (accounts) {
     });
 
     it('accepte offre', async function () {
-
+        let amount = ether("1");
         await this.PDMInstance.inscription(name, {from:newUser});
         await this.PDMInstance.inscriptionCompany({from:company});
-        await this.PDMInstance.ajouterDemande(demande.delay, demande.description, demande.minReputation, {from:company});
+        await this.PDMInstance.ajouterDemande(demande.remuneration,demande.delay, demande.description, demande.minReputation, demande.nomOffre, {from:company, value:amount});
         await this.PDMInstance.postuler(0, {from:newUser});
 
         await this.PDMInstance.accepterOffre(0, newUser, {from:company});
@@ -109,7 +109,7 @@ contract ('PlaceDeMarche', function (accounts) {
 
         await this.PDMInstance.inscription(name, {from:newUser});
         await this.PDMInstance.inscriptionCompany({from:company});
-        await this.PDMInstance.ajouterDemande(demande.delay, demande.description, demande.minReputation, {from:company});
+        await this.PDMInstance.ajouterDemande(demande.remuneration,demande.delay, demande.description, demande.minReputation, demande.nomOffre, {from:company, value:amount});
         await this.PDMInstance.postuler(0, {from:newUser});
         await this.PDMInstance.accepterOffre(0, newUser, {from:company});
 
@@ -120,7 +120,7 @@ contract ('PlaceDeMarche', function (accounts) {
         let getDemande = await this.PDMInstance.getDemande(0);
         let userToReputationAfter= await this.PDMInstance.userToReputation.call(newUser);
 
-        expect(getDemande.travail).to.equal(travail);
+        expect(getDemande.travail).to.equal(web3.utils.soliditySha3(travail));
         expect(Number(getDemande.status)).to.equal(2);
         expect(Number(userToReputationAfter)).to.equal(Number(userToReputationBefore)+1);
 
@@ -131,7 +131,7 @@ contract ('PlaceDeMarche', function (accounts) {
 
         await this.PDMInstance.inscription(name, {from:newUser});
         await this.PDMInstance.inscriptionCompany({from:company});
-        await this.PDMInstance.ajouterDemande(demande.delay, demande.description, demande.minReputation, {from:company});
+        await this.PDMInstance.ajouterDemande(demande.remuneration,demande.delay, demande.description, demande.minReputation, demande.nomOffre, {from:company, value:amount});
         await this.PDMInstance.postuler(0, {from:newUser});
         await this.PDMInstance.accepterOffre(0, newUser, {from:company});
 
