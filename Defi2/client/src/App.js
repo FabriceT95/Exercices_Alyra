@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PlaceDeMarche from './contracts/PlaceDeMarche.json';
 import getWeb3 from './getWeb3';
+import web3 from "web3";
 
 import {
     BrowserRouter as Router,
@@ -33,8 +34,6 @@ class App extends Component {
                 PlaceDeMarche.abi,
                 deployedNetwork.address
             );
-
-           // const checkAdmin = await instance.methods.admins(accounts[0]).call();
 
             // Set web3, accounts, and contract to the state, and then proceed with an
             // example of interacting with the contract's methods.
@@ -98,6 +97,11 @@ class Header extends React.Component {
                                         </a>
                                     </li>
 
+                                    <li className="nav-item">
+                                        <a className="nav-link">
+                                            <Link to="/inscription_entreprise">Inscription Entreprise</Link>
+                                        </a>
+                                    </li>
 
                                     <li className="nav-item">
                                         <a className="nav-link">
@@ -107,10 +111,9 @@ class Header extends React.Component {
 
                                     <li className="nav-item">
                                         <a className="nav-link">
-                                            <Link to="/inscription_entreprise">Inscription Entreprise</Link>
+                                            <Link to="/mesOffres">Les offres de mon entreprise</Link>
                                         </a>
                                     </li>
-
 
                                     <li className="nav-item">
                                         <a className="nav-link">
@@ -124,11 +127,6 @@ class Header extends React.Component {
                                         </a>
                                     </li>
 
-                                    <li className="nav-item">
-                                        <a className="nav-link">
-                                            <Link to="/mesOffres">Les offres de mon entreprise</Link>
-                                        </a>
-                                    </li>
                                 </ul>
                             </div>
                         </nav>
@@ -155,10 +153,7 @@ class Header extends React.Component {
                     </div>
                 </Router>
                 <div style={{display: 'block'}}>
-                    <ModalAddOffre state={this.state}/>
-                </div>
-                <div style={{display: 'block'}}>
-                    <ModalCandidatsOffre state={this.state}/>
+                    <ModalAddOffre state={this.state2}/>
                 </div>
             </>
 
@@ -177,8 +172,6 @@ class Inscription_Illustrateur extends React.Component {
         await contract.methods
             .inscription(nomIllustrateur)
             .send({from: accounts[0]});
-
-       // contract.events.on('inscription_illustrateur', (name) => alert(name))
     };
 
     render() {
@@ -292,15 +285,14 @@ class Offres extends React.Component {
                 <table className="table">
                     <thead>
                     <tr>
-
-                        <th scope="col">Identifiant</th>
-                        <th scope="col">addressCompany</th>
-                        <th scope="col">nomOffre</th>
-                        <th scope="col">remu</th>
-                        <th scope="col">depot</th>
-                        <th scope="col">delay</th>
-                        <th scope="col">description</th>
-                        <th scope="col">minRep</th>
+                        <th scope="col">Identifiant de l'offre</th>
+                        <th scope="col">Adresse de l'entreprise</th>
+                        <th scope="col">Nom de l'offre</th>
+                        <th scope="col">Remunération</th>
+                        <th scope="col">Dépôt</th>
+                        <th scope="col">Délais</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Réputation Minimale</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -316,7 +308,7 @@ class Offres extends React.Component {
                                 <td>{offre.delay}</td>
                                 <td>{offre.description}</td>
                                 <td>{offre.minReputation}</td>
-                                <td><input className="btn btn-primary" type="button" value="Input"
+                                <td><input className="btn btn-primary" type="button" value="Postuler"
                                            onClick={() => this.postulerOffre(offre.id)}/></td>
                             </tr>
                         )}
@@ -445,7 +437,6 @@ class ModalAddOffre extends React.Component {
     constructor(props) {
         super(props);
         this.state2 = props.state;
-        this.state = {nomOffre: '', descriptionOffre: '', delais: null, remuneration: null, reputation: null};
         this.nomOffre = React.createRef();
         this.descriptionOffre = React.createRef();
         this.delais = React.createRef();
@@ -456,7 +447,10 @@ class ModalAddOffre extends React.Component {
 
     addOffre = async (Remuneration, Delais, descriptionOffre, Reputation, nomOffre) => {
         const {contract, accounts} = this.state2;
-        await contract.methods.ajouterDemande(Remuneration, Delais, descriptionOffre, Reputation, nomOffre).send({from: accounts[0]});
+        let amount = Remuneration * 1.02;
+        let remunerationEnEther = web3.utils.toWei(Remuneration.toString(), "ether");
+        const DelaisSeconds = parseInt(Delais) * 24 * 60 * 60;
+        await contract.methods.ajouterDemande(remunerationEnEther, DelaisSeconds, descriptionOffre, Reputation, nomOffre).send({from: accounts[0], value: web3.utils.toWei(amount.toString(), "ether")});
     };
 
     handleSubmit(e) {
@@ -498,7 +492,7 @@ class ModalAddOffre extends React.Component {
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="descriptionOffre"> Description de l'offre</label>
+                                                    <label htmlFor="descriptionOffre">Description de l'offre</label>
 
                                                     <input
                                                         id="descriptionOffre"
@@ -508,7 +502,7 @@ class ModalAddOffre extends React.Component {
                                                     />
                                                 </div>
                                                 <div className="form-group">
-                                                    <label htmlFor="Delais">Délais</label>
+                                                    <label htmlFor="Delais">Délais (en jours, à partir de maintenant)</label>
                                                     <input
                                                         type="text"
                                                         className="form-control"
@@ -598,12 +592,12 @@ class Offres_entreprise extends React.Component {
 
                         <th scope="col">Identifiant</th>
                         <th scope="col">Status</th>
-                        <th scope="col">nomOffre</th>
-                        <th scope="col">remu</th>
-                        <th scope="col">depot</th>
-                        <th scope="col">delay</th>
-                        <th scope="col">description</th>
-                        <th scope="col">minRep</th>
+                        <th scope="col">Nom de l'offre</th>
+                        <th scope="col">Rémunération</th>
+                        <th scope="col">Dépôt</th>
+                        <th scope="col">Délais</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Réputation Minimale</th>
                         <th scope="col">Candidats</th>
                         <th scope="col">Illustrateur Choisi</th>
                     </tr>
@@ -649,145 +643,4 @@ class Offres_entreprise extends React.Component {
             </>
         );
     }
-}
-
-class Ban extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            arrayOffresEntreprise: [],
-        };
-        this.state2 = props.state;
-    }
-
-    displayOffresEntreprise = async () => {
-        const {contract, accounts} = this.state2;
-        let arrayOffres = await contract.methods.getAllDemandes().call();
-        let arrayOffresEntreprise = [];
-        for (let i = 0; i < arrayOffres.length; i++) {
-            if (arrayOffres[i].addressCompany === accounts[0]) {
-                arrayOffresEntreprise.push(arrayOffres[i]);
-            }
-        }
-        this.setState({arrayOffresEntreprise: arrayOffresEntreprise})
-    };
-
-    accepterCandidat = async (idDemande, candidat) => {
-        const {contract, accounts} = this.state2;
-        await contract.methods.accepterOffre(idDemande, candidat).send({from: accounts[0]});
-        this.displayOffresEntreprise();
-        alert("Vous avez accepté le candidat suivant : "+candidat);
-    };
-
-    retard = async(idDemande) => {
-        const { contract } = this.state2;
-        await contract.methods.retard(idDemande).send();
-        alert('Retard signalé !');
-    };
-
-    componentDidMount() {
-        this.displayOffresEntreprise();
-    }
-
-    render() {
-        return (<>
-                <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                    Ajouter une offre
-                </button>
-                <table className="table">
-                    <thead>
-                    <tr>
-
-                        <th scope="col">Identifiant</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">nomOffre</th>
-                        <th scope="col">remu</th>
-                        <th scope="col">depot</th>
-                        <th scope="col">delay</th>
-                        <th scope="col">description</th>
-                        <th scope="col">minRep</th>
-                        <th scope="col">Candidats</th>
-                        <th scope="col">Illustrateur Choisi</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        this.state.arrayOffresEntreprise.map(offre =>
-                            <tr>
-                                <td scope="row">{offre.id}</td>
-                                <td>{offre.status}</td>
-                                <td>{offre.nomOffre}</td>
-                                <td>{offre.remuneration}</td>
-                                <td>{offre.depot}</td>
-                                {/* VOIR LA DATE */}
-                                <td>{offre.delay}</td>
-                                <td>{offre.description}</td>
-                                <td>{offre.minReputation}</td>
-                                <td>
-                                    <ul className="list-group">
-                                        {offre.candidates.map(candidat => <li class="list-group-item">{candidat}
-                                                <button type="button" className="btn btn-info"
-                                                        onClick={() => this.accepterCandidat(offre.id, candidat)}><span
-                                                    className="glyphicon glyphicon-ok"></span></button>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </td>
-                                <td style={{textAlign:'center'}}>
-                                    {offre.illustrateurChoisi != 0x0000000000000000000000000000000000000000 ? (
-                                        offre.illustrateurChoisi
-                                    ) : (
-                                        <span>/</span>
-                                    )}
-                                    {offre.delay < Date() &&  offre.illustrateurChoisi != 0x0000000000000000000000000000000000000000 ?
-                                        <button type="button" className="btn btn-info"
-                                                onClick={() => this.retard(offre.id)}><span>Retard</span></button> : ""
-                                    }
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </>
-        );
-    }
-}
-
-
-class ModalCandidatsOffre extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state2 = props.state;
-    }
-
-    render() {
-        return (
-            <>
-                <div class="modal fade" id="modalCandidates" tabIndex="-1" role="dialog"
-                     aria-labelledby="modalCandidates" aria-hidden="false">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-sm">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </>
-        )
-    }
-
 }
